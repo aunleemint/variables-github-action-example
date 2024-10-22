@@ -1,11 +1,23 @@
-name: CI
-on: [push]
+name: Sync Figma Tokens
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
-  test:
+  sync:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out repository code
+      - name: Checkout repository
         uses: actions/checkout@v3
-      - run: npm install
-      - run: npm run prettier:check
-      - run: npm run test
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Sync Figma Tokens
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          FILE_KEY: ${{ secrets.FILE_KEY }}
+        run: npm run sync-figma-to-tokens -- --output tokens
